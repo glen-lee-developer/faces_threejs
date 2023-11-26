@@ -6,7 +6,7 @@ import { setupResize } from "./resize";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
-function init(): void {
+async function init() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const scene = new THREE.Scene();
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
@@ -39,4 +39,5 @@ function init(): void {
   }
   animateFrame();
 }
+
 init();
