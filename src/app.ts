@@ -10,6 +10,7 @@ async function init() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const scene = new THREE.Scene();
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  renderer.setClearColor(0x000000, 1);
 
   //  Setup
   addLights(scene);
@@ -17,7 +18,6 @@ async function init() {
   setupControls(camera, renderer);
   const { width, height } = setupResize(camera, renderer);
 
-  //  Test Mesh
   const geometry = new THREE.PlaneGeometry(1, 1, 50, 50);
   const material = new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
