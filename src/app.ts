@@ -5,11 +5,12 @@ import { setupControls } from "./controls";
 import { setupResize } from "./resize";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
-import model1 from "../images/model1.jpg";
-import model2 from "../images/model2.jpg";
-import model3 from "../images/model3.jpg";
-import model4 from "../images/model4.jpg";
-import model5 from "../images/model5.jpg";
+import model1 from "../images/model1.png";
+import model2 from "../images/model2.png";
+import model3 from "../images/model3.png";
+import model4 from "../images/model4.png";
+import model5 from "../images/model5.png";
+import model6 from "../images/model5.png";
 
 async function init() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -21,7 +22,7 @@ async function init() {
   addLights(scene);
   const camera = createCamera();
 
-  const gridSize = 5; // Define grid size
+  const gridSize = 19; // Define grid size
 
   setupControls(camera, renderer);
   const { width, height } = setupResize(camera, renderer);
@@ -32,7 +33,9 @@ async function init() {
     textureLoader.load(model3),
     textureLoader.load(model4),
     textureLoader.load(model5),
+    textureLoader.load(model6),
   ];
+  const randomnessFactor = 0; // Adjust this value to control the amount of randomness
 
   // Create a grid of planes
   for (let i = 0; i < gridSize; i++) {
@@ -40,7 +43,10 @@ async function init() {
       // Randomly choose a texture from the array
       const texture = textures[Math.floor(Math.random() * textures.length)];
 
-      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+      });
 
       // Create a plane geometry and adjust its UVs to map to a section of the texture
       const geometry = new THREE.PlaneGeometry(1, 1);
@@ -55,16 +61,22 @@ async function init() {
       const myMesh = new THREE.Mesh(geometry, material);
 
       // Position the mesh in the grid
-      myMesh.position.set(
-        i - (gridSize / 2 - 0.5),
-        j - (gridSize / 2 - 0.5),
-        0
-      );
+      const x = i - (gridSize / 2 - 0.5);
+      const y = j - (gridSize / 2 - 0.5);
+      myMesh.position.set(x, y, 0);
 
-      scene.add(myMesh);
+      // Calculate the distance from the center
+      const distanceFromCenter = Math.sqrt(x * x + y * y);
+
+      // Add a random offset to the radius
+      const radius = gridSize / 2 + (Math.random() - 0.5) * randomnessFactor;
+
+      // If the distance is less than the radius, add the mesh to the scene
+      if (distanceFromCenter <= radius) {
+        scene.add(myMesh);
+      }
     }
   }
-
   // Create raycaster and mouse objects
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
